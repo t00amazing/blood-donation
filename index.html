@@ -302,12 +302,17 @@
     </div>
 
     <div class="field-group">
+      <div class="q-title"><span class="q-number">7</span> 보호자 성명 <span class="required">*</span></div>
+      <input type="text" id="parent-name" placeholder="예: 홍길순 (정자로 입력해주세요)">
+    </div>
+
+    <div class="field-group">
       <label style="font-size:13px;font-weight:600;color:#444;margin-bottom:8px;display:block;">학부모 서명 <span class="required">*</span></label>
-      <div class="field-hint" style="margin-bottom:4px;">마우스 또는 손가락으로 서명해주세요</div>
-      <div class="field-hint" style="margin-bottom:8px; color:#c0392b; font-weight:600;">✏️ 보호자 성명을 정자로 기입해주세요.</div>
+      <div class="field-hint" style="margin-bottom:4px;">손가락으로 천천히 서명해주세요</div>
+      <div class="field-hint" style="margin-bottom:8px; color:#c0392b; font-weight:600;">✏️ 손가락을 떼도 서명이 유지됩니다. 천천히 써주세요.</div>
       <div class="canvas-wrap">
-        <div class="sig-label">서명란 (아래에 서명하세요)</div>
-        <canvas id="sigCanvas" height="160"></canvas>
+        <div class="sig-label">서명란 — 아래에 서명해주세요</div>
+        <canvas id="sigCanvas" height="180"></canvas>
         <div class="canvas-actions">
           <button class="btn-clear" onclick="clearCanvas()">서명 지우기</button>
         </div>
@@ -337,11 +342,11 @@
 </div>
 
 <script>
-  let GOOGLE_SCRIPT_URL = localStorage.getItem('gsUrl') || 'https://script.google.com/macros/s/AKfycbwaXh9LlQ2mp9IHFkEsZ5tdhCknbM3f8vqLLJlpMf29_yzGPxPOmGKY-A-iDjuKRlnp/execp';
+  let GOOGLE_SCRIPT_URL = localStorage.getItem('gsUrl') || 'YOUR_GOOGLE_SCRIPT_URL_HERE';
   let deadlineTime = localStorage.getItem('deadline') ? new Date(localStorage.getItem('deadline')) : null;
 
   // ── 관리자 비밀번호 (여기서 변경 가능) ──
-  const ADMIN_PASSWORD = '0526';
+  const ADMIN_PASSWORD = '1234';
   let adminUnlocked = false;
 
   function toggleAdminLock() {
@@ -451,34 +456,97 @@
     initCanvas();
   });
 
-  // Canvas
+  // ── Canvas 서명 (모바일 최적화) ──
   const canvas = document.getElementById('sigCanvas');
   const ctx = canvas.getContext('2d');
-  let drawing = false, hasSig = false;
+  let drawing = false;
+  let hasSig = false;
+  let paths = [];
+  let currentPath = [];
 
-  function initCanvas() {
-    canvas.width = canvas.parentElement.offsetWidth;
+  function setupCtx() {
     ctx.strokeStyle = '#1a1a1a';
     ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
   }
-  window.addEventListener('resize', initCanvas);
+
+  function initCanvas() {
+    const wrap = canvas.parentElement;
+    canvas.width = wrap.offsetWidth;
+    canvas.height = 180;
+    setupCtx();
+    redrawAll();
+  }
 
   function getPos(e) {
     const r = canvas.getBoundingClientRect();
     const src = e.touches ? e.touches[0] : e;
-    return { x: (src.clientX - r.left) * (canvas.width / r.width), y: (src.clientY - r.top) * (canvas.height / r.height) };
+    return {
+      x: (src.clientX - r.left) * (canvas.width / r.width),
+      y: (src.clientY - r.top) * (canvas.height / r.height)
+    };
   }
-  canvas.addEventListener('mousedown', e => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
-  canvas.addEventListener('mousemove', e => { if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); hasSig = true; });
-  canvas.addEventListener('mouseup', () => drawing = false);
-  canvas.addEventListener('mouseleave', () => drawing = false);
-  canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }, { passive: false });
-  canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); hasSig = true; }, { passive: false });
-  canvas.addEventListener('touchend', () => drawing = false);
 
-  function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); hasSig = false; }
+  function startDraw(e) {
+    e.preventDefault();
+    drawing = true;
+    currentPath = [];
+    const p = getPos(e);
+    currentPath.push(p);
+    setupCtx();
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+  }
+
+  function moveDraw(e) {
+    e.preventDefault();
+    if (!drawing) return;
+    const p = getPos(e);
+    currentPath.push(p);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    hasSig = true;
+  }
+
+  function endDraw(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    drawing = false;
+    if (currentPath.length > 0) paths.push([...currentPath]);
+  }
+
+  function redrawAll() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    setupCtx();
+    paths.forEach(path => {
+      if (path.length === 0) return;
+      ctx.beginPath();
+      ctx.moveTo(path[0].x, path[0].y);
+      path.forEach(p => { ctx.lineTo(p.x, p.y); ctx.stroke(); });
+    });
+  }
+
+  function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    paths = [];
+    currentPath = [];
+    hasSig = false;
+  }
+
+  canvas.style.touchAction = 'none';
+  canvas.style.userSelect = 'none';
+  canvas.style.webkitUserSelect = 'none';
+
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', moveDraw);
+  canvas.addEventListener('mouseup', endDraw);
+  canvas.addEventListener('mouseleave', endDraw);
+  canvas.addEventListener('touchstart', startDraw, { passive: false });
+  canvas.addEventListener('touchmove', moveDraw, { passive: false });
+  canvas.addEventListener('touchend', endDraw, { passive: false });
+  canvas.addEventListener('touchcancel', endDraw, { passive: false });
+  window.addEventListener('resize', initCanvas);
 
   function toggleCheck(el) {
     const cb = el.querySelector('input[type="checkbox"]');
@@ -501,6 +569,7 @@
     const studentId   = document.getElementById('student-id').value.trim();
     const studentName = document.getElementById('student-name').value.trim();
     const parentTel   = document.getElementById('parent-tel').value.trim();
+    const parentName  = document.getElementById('parent-name').value.trim();
     const allChecked  = document.querySelectorAll('#checklist input:not(:checked)').length === 0;
 
     if (!allChecked)     { alert('유의사항 체크리스트를 모두 확인해주세요.'); return; }
@@ -511,6 +580,7 @@
     if (!studentId)      { alert('학번을 입력해주세요.'); return; }
     if (!studentName)    { alert('학생 이름을 입력해주세요.'); return; }
     if (!parentTel)      { alert('학부모 연락처를 입력해주세요.'); return; }
+    if (!parentName)     { alert('보호자 성명을 입력해주세요.'); return; }
     if (!hasSig)         { alert('학부모 서명을 해주세요.'); return; }
 
     const btn = document.getElementById('submitBtn');
@@ -519,7 +589,7 @@
 
     const payload = {
       submitTime: new Date().toLocaleString('ko-KR'),
-      studentId, studentName, parentTel, q2, q3,
+      studentId, studentName, parentTel, parentName, q2, q3,
       checklist: '모두 확인',
       signatureData: canvas.toDataURL('image/png')
     };
