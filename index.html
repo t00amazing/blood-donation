@@ -337,11 +337,11 @@
 </div>
 
 <script>
-  let GOOGLE_SCRIPT_URL = localStorage.getItem('gsUrl') || '';
+  let GOOGLE_SCRIPT_URL = localStorage.getItem('gsUrl') || 'https://script.google.com/macros/s/AKfycbwaXh9LlQ2mp9IHFkEsZ5tdhCknbM3f8vqLLJlpMf29_yzGPxPOmGKY-A-iDjuKRlnp/execp';
   let deadlineTime = localStorage.getItem('deadline') ? new Date(localStorage.getItem('deadline')) : null;
 
   // ── 관리자 비밀번호 (여기서 변경 가능) ──
-  const ADMIN_PASSWORD = '1234';
+  const ADMIN_PASSWORD = '0526';
   let adminUnlocked = false;
 
   function toggleAdminLock() {
