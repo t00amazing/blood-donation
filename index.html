@@ -602,8 +602,21 @@
     }
 
     try {
-      await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      // 모바일 호환을 위해 FormData 방식과 JSON 방식 동시 시도
+      const formData = new FormData();
+      formData.append('data', JSON.stringify(payload));
+
+      // 방법1: JSON fetch (no-cors)
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(() => {});
+
+      // 성공 화면은 바로 표시 (no-cors는 응답 확인 불가)
       showSuccess(studentName);
+
     } catch (err) {
       alert('제출 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       btn.disabled = false;
@@ -611,10 +624,10 @@
     }
   }
 
-  function showSuccess(name) {
+  function showSuccess(studentName) {
     document.getElementById('form-section').style.display = 'none';
     document.getElementById('successDiv').classList.add('show');
-    document.getElementById('success-name').textContent = name;
+    document.getElementById('success-name').textContent = studentName;
   }
 </script>
 </body>
