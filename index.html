@@ -95,14 +95,7 @@
   .admin-field input:focus { border-color: var(--red); background: white; }
   .admin-field.full { grid-column: 1 / -1; }
   .admin-field input::placeholder { color: var(--gray-400); }
-  .admin-url-field { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--gray-100); }
-  .admin-url-field label { display: block; font-size: 11px; color: var(--gray-400); font-weight: 600; margin-bottom: 4px; }
-  .admin-url-field input {
-    width: 100%; padding: 9px 12px; background: var(--gray-50);
-    border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
-    font-size: 12px; color: var(--gray-800); font-family: monospace; outline: none; transition: border-color 0.15s;
-  }
-  .admin-url-field input:focus { border-color: var(--red); background: white; }
+
   .admin-save-btn {
     width: 100%; margin-top: 14px; padding: 12px; background: var(--gray-800); color: white;
     border: none; border-radius: var(--radius-full); font-size: 14px; font-weight: 600;
@@ -324,10 +317,6 @@
         <input type="text" id="cfg-q2-sub" placeholder="예: (여학생의 경우 ...)" value="(여학생의 경우, 만 16세 미만, 몸무게 47kg 미만인 경우 참여불가 합니다.)">
       </div>
     </div>
-    <div class="admin-url-field">
-      <label>🔗 Google Apps Script URL</label>
-      <input type="text" id="cfg-url" placeholder="https://script.google.com/macros/s/.../exec">
-    </div>
     <button class="admin-save-btn" onclick="applySettings()">✅ 설정 저장 및 적용</button>
   </div>
 
@@ -464,11 +453,11 @@
 </div>
 
 <script>
-  let GOOGLE_SCRIPT_URL = localStorage.getItem('gsUrl') || 'https://script.google.com/macros/s/AKfycbwaXh9LlQ2mp9IHFkEsZ5tdhCknbM3f8vqLLJlpMf29_yzGPxPOmGKY-A-iDjuKRlnp/exec';
+  let GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwaXh9LlQ2mp9IHFkEsZ5tdhCknbM3f8vqLLJlpMf29_yzGPxPOmGKY-A-iDjuKRlnp/exec';
   let deadlineTime = localStorage.getItem('deadline') ? new Date(localStorage.getItem('deadline')) : null;
 
   // ── 관리자 비밀번호 (여기서 변경 가능) ──
-  const ADMIN_PASSWORD = '0526';
+  const ADMIN_PASSWORD = '1234';
   let adminUnlocked = false;
 
   function toggleAdminLock() {
@@ -516,7 +505,6 @@
     const service  = document.getElementById('cfg-service').value.trim();
     const subtitle = document.getElementById('cfg-subtitle').value.trim();
     const deadline = document.getElementById('cfg-deadline').value;
-    const url      = document.getElementById('cfg-url').value.trim();
     const q2title  = document.getElementById('cfg-q2-title').value.trim();
     const q2sub    = document.getElementById('cfg-q2-sub').value.trim();
 
@@ -525,7 +513,6 @@
     if (target)   document.getElementById('disp-target').textContent  = target;
     if (service)  document.getElementById('disp-service').textContent = service;
     if (subtitle) document.getElementById('disp-subtitle').textContent = subtitle;
-    if (url)      { GOOGLE_SCRIPT_URL = url; localStorage.setItem('gsUrl', url); }
     if (q2title)  document.getElementById('disp-q2-title').textContent = q2title;
     if (q2sub)    document.getElementById('disp-q2-sub').textContent   = q2sub;
 
@@ -563,9 +550,6 @@
   }
 
   window.addEventListener('load', () => {
-    const savedUrl = localStorage.getItem('gsUrl');
-    if (savedUrl) document.getElementById('cfg-url').value = savedUrl;
-
     const savedDeadline = localStorage.getItem('deadline');
     if (savedDeadline) {
       document.getElementById('cfg-deadline').value = savedDeadline;
