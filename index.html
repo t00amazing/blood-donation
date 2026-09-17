@@ -34,8 +34,29 @@
   }
   .page-wrap { max-width: 600px; margin: 0 auto; }
 
-  /* ── 관리자 ── */
-  .admin-toggle {
+  /* ── 상태바 (동기화) ── */
+  .sync-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(255,255,255,0.85); backdrop-filter: blur(8px);
+    border: 1px solid var(--gray-200);
+    color: var(--gray-600); padding: 10px 16px;
+    border-radius: var(--radius-full); margin-bottom: 10px;
+    font-size: 12px; font-weight: 500; box-shadow: var(--shadow-sm);
+  }
+  .sync-bar .sync-status { display: flex; align-items: center; gap: 6px; }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gray-400); flex-shrink: 0; }
+  .sync-dot.ok { background: #16a34a; }
+  .sync-dot.err { background: var(--red); }
+  .sync-refresh-btn {
+    border: none; background: var(--gray-100); color: var(--gray-600);
+    padding: 6px 12px; border-radius: var(--radius-full); font-size: 12px;
+    font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s;
+  }
+  .sync-refresh-btn:hover { background: var(--gray-200); }
+  .sync-refresh-btn:disabled { opacity: 0.6; cursor: default; }
+
+  /* ── 신청자 명단 ── */
+  .list-toggle {
     display: flex; align-items: center; justify-content: space-between;
     background: rgba(255,255,255,0.7); backdrop-filter: blur(8px);
     border: 1px solid var(--gray-200);
@@ -44,64 +65,44 @@
     font-size: 13px; font-weight: 500; user-select: none;
     box-shadow: var(--shadow-sm); transition: all 0.15s;
   }
-  .admin-toggle:hover { background: white; color: var(--gray-800); }
-  .admin-toggle .arrow { transition: transform 0.2s; font-size: 11px; color: var(--gray-400); }
-  .admin-toggle .arrow.open { transform: rotate(180deg); }
-  .admin-lock {
-    background: white; border-radius: var(--radius-md); padding: 18px;
-    margin-bottom: 12px; display: none; align-items: center; gap: 10px;
+  .list-toggle:hover { background: white; color: var(--gray-800); }
+  .list-toggle .arrow { transition: transform 0.2s; font-size: 11px; color: var(--gray-400); }
+  .list-toggle .arrow.open { transform: rotate(180deg); }
+  .list-panel {
+    background: white; border-radius: var(--radius-md);
+    margin-bottom: 12px; display: none; overflow: hidden;
     box-shadow: var(--shadow-md); border: 1px solid var(--gray-200);
   }
-  .admin-lock.show { display: flex; }
-  .admin-lock input {
-    flex: 1; padding: 10px 14px; background: var(--gray-50);
-    border: 1.5px solid var(--gray-200); border-radius: var(--radius-full);
-    font-size: 14px; color: var(--gray-800); font-family: inherit; outline: none;
-    letter-spacing: 4px; transition: border-color 0.15s;
-  }
-  .admin-lock input:focus { border-color: var(--red); background: white; }
-  .admin-lock button {
-    padding: 10px 20px; background: var(--gray-800); color: white; border: none;
-    border-radius: var(--radius-full); font-size: 13px; font-weight: 600;
-    cursor: pointer; font-family: inherit; white-space: nowrap; transition: opacity 0.15s;
-  }
-  .admin-lock button:hover { opacity: 0.85; }
-  .admin-lock-hint { font-size: 12px; color: var(--gray-400); white-space: nowrap; }
-  .admin-panel {
-    background: white; border-radius: var(--radius-md); padding: 20px;
-    margin-bottom: 16px; display: none;
-    box-shadow: var(--shadow-md); border: 1px solid var(--gray-200);
-  }
-  .admin-panel.show { display: block; }
-  .admin-logout {
+  .list-panel.show { display: block; }
+  .list-panel-header {
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--gray-100);
+    flex-wrap: wrap; gap: 8px; padding: 14px 16px;
+    border-bottom: 1px solid var(--gray-100);
   }
-  .admin-logout span { color: #16a34a; font-size: 13px; font-weight: 600; }
-  .admin-logout button {
-    padding: 5px 14px; background: var(--gray-100); border: none;
-    border-radius: var(--radius-full); color: var(--gray-600); font-size: 12px;
-    cursor: pointer; font-family: inherit; transition: background 0.15s;
+  .list-count { font-size: 12.5px; color: var(--gray-600); font-weight: 600; }
+  .list-sort-buttons { display: flex; gap: 6px; }
+  .sort-btn {
+    border: 1.5px solid var(--gray-200); background: var(--gray-50);
+    color: var(--gray-600); padding: 6px 12px; border-radius: var(--radius-full);
+    font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+    transition: all 0.12s; white-space: nowrap;
   }
-  .admin-logout button:hover { background: var(--gray-200); }
-  .admin-panel h3 { color: var(--gray-400); font-size: 11px; font-weight: 600; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1px; }
-  .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .admin-field label { display: block; font-size: 11px; color: var(--gray-400); font-weight: 600; margin-bottom: 4px; }
-  .admin-field input {
-    width: 100%; padding: 9px 12px; background: var(--gray-50);
-    border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
-    font-size: 13px; color: var(--gray-800); font-family: inherit; outline: none; transition: border-color 0.15s;
+  .sort-btn:hover { background: var(--gray-100); }
+  .sort-btn.active { border-color: var(--red); background: var(--red); color: white; }
+  .list-table-wrap { overflow-x: auto; }
+  .submission-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .submission-table th {
+    text-align: left; padding: 10px 16px; background: var(--gray-50);
+    color: var(--gray-400); font-size: 10.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--gray-200); white-space: nowrap;
   }
-  .admin-field input:focus { border-color: var(--red); background: white; }
-  .admin-field.full { grid-column: 1 / -1; }
-  .admin-field input::placeholder { color: var(--gray-400); }
-
-  .admin-save-btn {
-    width: 100%; margin-top: 14px; padding: 12px; background: var(--gray-800); color: white;
-    border: none; border-radius: var(--radius-full); font-size: 14px; font-weight: 600;
-    cursor: pointer; font-family: inherit; transition: opacity 0.15s;
+  .submission-table td {
+    padding: 11px 16px; border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-800); white-space: nowrap;
   }
-  .admin-save-btn:hover { opacity: 0.85; }
+  .submission-table tr:last-child td { border-bottom: none; }
+  .empty-row { text-align: center; color: var(--gray-400); padding: 24px 16px !important; white-space: normal !important; }
 
   /* ── 마감 경고 ── */
   .deadline-warning {
@@ -127,13 +128,12 @@
     transform: translateY(-50%); font-size: 72px; opacity: 0.12; pointer-events: none;
   }
   .header-badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: rgba(255,255,255,0.2); border-radius: var(--radius-full);
-    padding: 4px 12px; font-size: 11px; font-weight: 600; margin-bottom: 12px;
-    letter-spacing: 0.3px;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.22); border-radius: var(--radius-full);
+    padding: 6px 15px; font-size: 13.5px; font-weight: 700; margin-bottom: 14px;
+    letter-spacing: 0.2px;
   }
-  .header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 5px; line-height: 1.3; }
-  .header p { font-size: 13px; opacity: 0.8; line-height: 1.6; }
+  .header h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.25; }
 
   /* ── 안내문 ── */
   .notice-box {
@@ -144,7 +144,12 @@
 
   /* ── 정보 그리드 ── */
   .info-grid { display: grid; grid-template-columns: 1fr 1fr; background: white; }
-  .info-item { padding: 14px 18px; border-bottom: 1px solid var(--gray-100); }
+  .info-item {
+    padding: 14px 18px; border-bottom: 1px solid var(--gray-100);
+    transition: background 0.18s ease, transform 0.18s ease;
+    cursor: default;
+  }
+  .info-item:hover { background: var(--red-light); transform: translateY(-2px); }
   .info-item:nth-child(odd) { border-right: 1px solid var(--gray-100); }
   .info-label { color: var(--gray-400); font-size: 10px; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.7px; }
   .info-value { color: var(--gray-800); font-weight: 600; font-size: 14px; }
@@ -169,6 +174,12 @@
   .restriction-item {
     display: flex; align-items: flex-start; gap: 10px; padding: 11px 14px;
     background: var(--gray-50); border-radius: var(--radius-sm); font-size: 13px; color: var(--gray-600);
+    border: 1px solid transparent;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+  }
+  .restriction-item:hover {
+    background: var(--red-light); border-color: var(--red-mid);
+    transform: translateX(4px); box-shadow: 0 4px 12px rgba(229,52,42,0.1);
   }
   .restriction-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
 
@@ -177,10 +188,13 @@
   .check-item {
     display: flex; align-items: center; gap: 12px; padding: 13px 16px;
     border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
-    cursor: pointer; transition: all 0.12s; background: white;
+    cursor: pointer; transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    background: white;
   }
+  .check-item:hover { border-color: var(--red-mid); background: var(--red-light); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(229,52,42,0.1); }
   .check-item:active { transform: scale(0.99); }
   .check-item.checked { border-color: var(--red); background: var(--red-light); }
+  .check-item.checked:hover { transform: translateY(-2px) scale(1.005); }
   .check-item input[type="checkbox"] { width: 18px; height: 18px; min-width: 18px; accent-color: var(--red); cursor: pointer; }
   .check-item label { font-size: 13.5px; line-height: 1.45; cursor: pointer; color: var(--gray-800); }
 
@@ -200,10 +214,13 @@
     flex: 1; padding: 13px 10px; border: 1.5px solid var(--gray-200);
     border-radius: var(--radius-sm); text-align: center; cursor: pointer;
     font-size: 14px; font-weight: 600; color: var(--gray-600);
-    transition: all 0.12s; background: var(--gray-50);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+    background: var(--gray-50);
   }
+  .radio-item:hover { border-color: var(--red); color: var(--red); transform: translateY(-3px); box-shadow: 0 6px 14px rgba(229,52,42,0.14); }
   .radio-item:active { transform: scale(0.98); }
   .radio-item.selected { border-color: var(--red); background: var(--red); color: white; box-shadow: 0 2px 8px rgba(229,52,42,0.25); }
+  .radio-item.selected:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(229,52,42,0.3); }
 
   /* ── 입력 필드 ── */
   .field-group { margin-bottom: 20px; }
@@ -238,6 +255,38 @@
   .btn-clear:hover { background: var(--gray-100); }
   .sig-label { padding: 10px 16px; font-size: 12px; color: var(--gray-400); border-bottom: 1px solid var(--gray-100); }
 
+  /* ── 단계별 위저드 ── */
+  .wizard-progress { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+  .wizard-progress-track { flex: 1; height: 5px; background: var(--gray-100); border-radius: var(--radius-full); overflow: hidden; }
+  .wizard-progress-fill { height: 100%; background: var(--red); border-radius: var(--radius-full); transition: width 0.35s ease; width: 12.5%; }
+  .wizard-progress-label { font-size: 11.5px; font-weight: 700; color: var(--gray-400); white-space: nowrap; min-width: 40px; text-align: right; }
+
+  .wizard-viewport { position: relative; min-height: 120px; }
+  .wizard-step { display: none; }
+  .wizard-step.active { display: block; animation: wizardIn 0.32s ease; }
+  @keyframes wizardIn {
+    from { opacity: 0; transform: translateX(16px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .wizard-nav { display: flex; gap: 10px; margin-top: 22px; }
+  .wizard-nav-btn {
+    flex: 1; padding: 15px; border: none; border-radius: var(--radius-full);
+    font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;
+    letter-spacing: -0.2px; transition: all 0.15s;
+  }
+  .wizard-nav-back {
+    flex: 0 0 92px; background: var(--gray-100); color: var(--gray-600);
+  }
+  .wizard-nav-back:hover { background: var(--gray-200); }
+  .wizard-nav-back:disabled { opacity: 0; pointer-events: none; }
+  .wizard-nav-next {
+    background: var(--red); color: white; box-shadow: 0 4px 16px rgba(229,52,42,0.3);
+  }
+  .wizard-nav-next:hover { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(229,52,42,0.35); }
+  .wizard-nav-next:active { transform: translateY(0); }
+  .wizard-nav-next:disabled { background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; box-shadow: none; transform: none; }
+
   /* ── 제출 버튼 ── */
   .submit-btn {
     width: 100%; padding: 17px; background: var(--red); color: white; border: none;
@@ -261,63 +310,69 @@
   .form-disabled-overlay .icon { font-size: 40px; margin-bottom: 12px; }
   .form-disabled-overlay p { color: var(--red); font-weight: 700; font-size: 16px; margin-bottom: 6px; }
   .form-disabled-overlay small { color: var(--gray-400); font-size: 13px; }
+
+  /* ── 모바일 대응 ── */
+  @media (max-width: 480px) {
+    body { padding: 14px 10px 32px; }
+    .header { padding: 22px 18px 20px; }
+    .header h1 { font-size: 24px; }
+    .sync-bar, .list-toggle, .admin-toggle { padding: 9px 13px; font-size: 11.5px; }
+    .section { padding: 18px 16px; }
+    .radio-group { gap: 6px; }
+    .radio-item { font-size: 13px; padding: 12px 6px; }
+    .wizard-nav-back { flex: 0 0 74px; padding: 15px 6px; font-size: 13px; }
+    .wizard-nav-next { font-size: 14.5px; padding: 15px 10px; }
+    .list-panel-header { flex-direction: column; align-items: flex-start; }
+    .list-sort-buttons { width: 100%; flex-wrap: wrap; }
+    .sort-btn { flex: 1 1 auto; min-width: 70px; }
+    .submission-table th, .submission-table td { padding: 9px 10px; font-size: 12px; }
+    .check-item label { font-size: 13px; }
+    .q-title { font-size: 13.5px; }
+  }
+
+  @media (max-width: 360px) {
+    .info-grid { grid-template-columns: 1fr; }
+    .info-item:nth-child(odd) { border-right: none; }
+  }
 </style>
 </head>
 <body>
 <div class="page-wrap">
 
-  <!-- 관리자 설정 패널 -->
-  <div class="admin-toggle" onclick="toggleAdminLock()">
-    <span>⚙️ 관리자 설정</span>
-    <span class="arrow" id="adminArrow">▼</span>
-  </div>
-  <!-- 비밀번호 입력 레이어 -->
-  <div class="admin-lock" id="adminLock">
-    <input type="password" id="adminPwInput" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')checkAdminPw()">
-    <span class="admin-lock-hint">🔒 관리자 전용</span>
-    <button onclick="checkAdminPw()">확인</button>
-  </div>
-  <div class="admin-panel" id="adminPanel">
-    <div class="admin-logout">
-      <span>✅ 관리자 모드</span>
-      <button onclick="logoutAdmin()">로그아웃</button>
+  <!-- 시트 동기화 상태바 -->
+  <div class="sync-bar">
+    <div class="sync-status">
+      <span class="sync-dot" id="syncDot"></span>
+      <span id="syncText">구글시트에서 정보를 불러오는 중...</span>
     </div>
-    <h3>📋 동의서 정보 설정</h3>
-    <div class="admin-grid">
-      <div class="admin-field">
-        <label>행사 일시</label>
-        <input type="text" id="cfg-date" placeholder="예: 2026.5.8(금) 9:30~" value="2026.5.8(금) 9:30~">
-      </div>
-      <div class="admin-field">
-        <label>장소</label>
-        <input type="text" id="cfg-place" placeholder="예: 이동형 헌혈 버스 본교" value="이동형 헌혈 버스 본교">
-      </div>
-      <div class="admin-field">
-        <label>대상 조건</label>
-        <input type="text" id="cfg-target" placeholder="예: 만 16세 이상 / 몸무게 47kg 이상" value="만 16세 이상 / 몸무게 47kg 이상">
-      </div>
-      <div class="admin-field">
-        <label>봉사시간</label>
-        <input type="text" id="cfg-service" placeholder="예: 4시간 인정" value="4시간 인정">
-      </div>
-      <div class="admin-field full">
-        <label>📅 동의서 제출 기한 (이 날짜 이후 제출 불가)</label>
-        <input type="datetime-local" id="cfg-deadline" style="color:#ecf0f1; background:#34495e; border:1px solid #445566; border-radius:8px; padding:9px 12px; width:100%; font-family:inherit; font-size:13px; outline:none;">
-      </div>
-      <div class="admin-field full">
-        <label>헤더 부제목</label>
-        <input type="text" id="cfg-subtitle" placeholder="날짜 · 장소 요약" value="2026년 5월 8일(금) 9:30 ~ | 이동형 헌혈 버스 본교 방문">
-      </div>
-      <div class="admin-field full">
-        <label>2번 질문 본문</label>
-        <input type="text" id="cfg-q2-title" placeholder="2번 질문 내용" value="학생의 나이가 만 16세 이상(2010년생 생일이 지난 경우), 몸무게 47kg 이상입니까?">
-      </div>
-      <div class="admin-field full">
-        <label>2번 질문 안내문구 (주황색 작은 글씨)</label>
-        <input type="text" id="cfg-q2-sub" placeholder="예: (여학생의 경우 ...)" value="(여학생의 경우, 만 16세 미만, 몸무게 47kg 미만인 경우 참여불가 합니다.)">
+    <button class="sync-refresh-btn" id="refreshBtn" onclick="fetchConfig()">🔄 새로고침</button>
+  </div>
+
+  <!-- 신청자 명단 -->
+  <div class="list-toggle" onclick="toggleSubmissionList()">
+    <span>📋 신청자 명단 보기</span>
+    <span class="arrow" id="listArrow">▼</span>
+  </div>
+  <div class="list-panel" id="listPanel">
+    <div class="list-panel-header">
+      <span class="list-count" id="submissionCount">불러오는 중...</span>
+      <div class="list-sort-buttons">
+        <button class="sort-btn" id="sortByIdBtn" onclick="setSort('studentId')">학번순 <span id="sortByIdArrow"></span></button>
+        <button class="sort-btn" id="sortByTimeBtn" onclick="setSort('submitTime')">제출순 <span id="sortByTimeArrow"></span></button>
+        <button class="sync-refresh-btn" onclick="loadSubmissionList()">🔄</button>
+        <button class="sync-refresh-btn" onclick="downloadSubmissionsAsExcel()">📥 엑셀 다운로드</button>
       </div>
     </div>
-    <button class="admin-save-btn" onclick="applySettings()">✅ 설정 저장 및 적용</button>
+    <div class="list-table-wrap">
+      <table class="submission-table">
+        <thead>
+          <tr><th>제출일시</th><th>학번</th><th>이름</th></tr>
+        </thead>
+        <tbody id="submissionListBody">
+          <tr><td colspan="3" class="empty-row">패널을 열면 명단을 불러옵니다</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <div class="deadline-warning" id="deadlineWarning">⛔ 제출 기한이 마감되었습니다.</div>
@@ -328,7 +383,6 @@
     <div class="header">
       <div class="header-badge">🩸 헌혈 참여 안내</div>
       <h1>학부모 동의서</h1>
-      <p id="disp-subtitle">2026년 5월 8일(금) 9:30 ~ | 이동형 헌혈 버스 본교 방문</p>
     </div>
 
     <!-- 안내문 -->
@@ -353,83 +407,96 @@
     <!-- 감염병 제한 -->
     <div class="section">
       <div class="section-title"><span class="section-title-dot"></span>감염병 관련 헌혈 제한</div>
-      <div class="restriction-list">
+      <div class="restriction-list" id="restrictionList">
         <div class="restriction-item"><span class="restriction-icon">⚠️</span>유행성각결막염: 치료 종료 후 4주 이후 헌혈 가능</div>
         <div class="restriction-item"><span class="restriction-icon">⚠️</span>독감(인플루엔자): 치료 종료 후 헌혈 가능</div>
         <div class="restriction-item"><span class="restriction-icon">⚠️</span>코로나19: 치료 종료 10일 후 가능</div>
       </div>
     </div>
 
-    <!-- 동의서 작성 폼 -->
+    <!-- 동의서 작성 폼 (단계별 진행) -->
     <div class="section" id="form-section">
       <div class="section-title"><span class="section-title-dot"></span>동의서 작성</div>
 
-      <div class="field-group">
-        <div class="q-title"><span class="q-number">1</span>헌혈 유의사항을 모두 확인하셨나요? <span class="required">*</span></div>
-        <div class="q-sub">아래 항목을 모두 체크해주세요</div>
-        <div class="checklist" id="checklist">
-          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" id="c1"><label for="c1">😴 헌혈 전 충분한 숙면</label></div>
-          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" id="c2"><label for="c2">🍚 헌혈 당일 아침 식사 필수</label></div>
-          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" id="c3"><label for="c3">🪪 본인 주민번호 13자리 숙지</label></div>
-          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" id="c4"><label for="c4">💊 약물복용 · 감염병 확진 등 헌혈 제한 사항 고지의무</label></div>
-          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" id="c5"><label for="c5">📌 보호자의 동의 필수</label></div>
-          <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" id="c6"><label for="c6">⚠️ 헌혈진행자가 많은 경우 당일 참여가 어려울 수 있음</label></div>
-        </div>
+      <div class="wizard-progress">
+        <div class="wizard-progress-track"><div class="wizard-progress-fill" id="progressFill"></div></div>
+        <div class="wizard-progress-label" id="progressLabel">1 / 8</div>
       </div>
 
-      <div class="field-group">
-        <div class="q-title"><span class="q-number">2</span><span id="disp-q2-title">학생의 나이가 만 16세 이상(2010년생 생일이 지난 경우), 몸무게 47kg 이상입니까?</span><span class="required">*</span></div>
-        <div class="q-sub" id="disp-q2-sub">(여학생의 경우, 만 16세 미만, 몸무게 47kg 미만인 경우 참여불가 합니다.)</div>
-        <div class="radio-group">
-          <div class="radio-item" onclick="selectRadio(this,'q2')" data-group="q2" data-value="예">예</div>
-          <div class="radio-item" onclick="selectRadio(this,'q2')" data-group="q2" data-value="아니오">아니오</div>
-        </div>
-      </div>
+      <div class="wizard-viewport">
 
-      <div class="field-group">
-        <div class="q-title"><span class="q-number">3</span>학생의 헌혈 참여에 동의하십니까? <span class="required">*</span></div>
-        <div class="q-sub">(학생의 헌혈 참여는 학부모님의 동의가 반드시 필요합니다.)</div>
-        <div class="radio-group">
-          <div class="radio-item" onclick="selectRadio(this,'q3')" data-group="q3" data-value="동의">예, 동의합니다</div>
-          <div class="radio-item" onclick="selectRadio(this,'q3')" data-group="q3" data-value="미동의">아니오</div>
-        </div>
-      </div>
-
-      <div class="field-group">
-        <div class="q-title"><span class="q-number">4</span>학생 학번 <span class="required">*</span></div>
-        <input type="text" id="student-id" placeholder="예: 20101" maxlength="10">
-        <div class="field-hint">학년+반+번호 형식 (예: 20101 = 2학년 1반 1번)</div>
-      </div>
-
-      <div class="field-group">
-        <div class="q-title"><span class="q-number">5</span>학생 이름 <span class="required">*</span></div>
-        <input type="text" id="student-name" placeholder="예: 홍길동">
-      </div>
-
-      <div class="field-group">
-        <div class="q-title"><span class="q-number">6</span>학부모 연락처 <span class="required">*</span></div>
-        <input type="tel" id="parent-tel" placeholder="예: 010-0000-0000">
-      </div>
-
-      <div class="field-group">
-        <div class="q-title"><span class="q-number">7</span>보호자 성명 <span class="required">*</span></div>
-        <input type="text" id="parent-name" placeholder="예: 홍길순">
-      </div>
-
-      <div class="field-group">
-        <div class="q-title" style="margin-bottom:6px;">학부모 서명 <span class="required">*</span></div>
-        <div class="field-hint" style="color:var(--red);font-weight:600;margin-bottom:3px;">✏️ 보호자 성명을 정자로 기입해주세요.</div>
-        <div class="field-hint" style="margin-bottom:10px;">손가락을 떼도 서명이 유지됩니다.</div>
-        <div class="canvas-wrap">
-          <div class="sig-label">서명란</div>
-          <canvas id="sigCanvas" height="180"></canvas>
-          <div class="canvas-actions">
-            <button class="btn-clear" onclick="clearCanvas()">서명 지우기</button>
+        <div class="wizard-step" id="step-0">
+          <div class="q-title"><span class="q-number">1</span>헌혈 유의사항을 모두 확인하셨나요? <span class="required">*</span></div>
+          <div class="q-sub">아래 항목을 모두 체크해주세요</div>
+          <div class="checklist" id="checklist">
+            <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" id="c1"><label for="c1">😴 헌혈 전 충분한 숙면</label></div>
+            <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" id="c2"><label for="c2">🍚 헌혈 당일 아침 식사 필수</label></div>
+            <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" id="c3"><label for="c3">🪪 본인 주민번호 13자리 숙지</label></div>
+            <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" id="c4"><label for="c4">💊 약물복용 · 감염병 확진 등 헌혈 제한 사항 고지의무</label></div>
+            <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" id="c5"><label for="c5">📌 보호자의 동의 필수</label></div>
+            <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" id="c6"><label for="c6">⚠️ 헌혈진행자가 많은 경우 당일 참여가 어려울 수 있음</label></div>
           </div>
         </div>
+
+        <div class="wizard-step" id="step-1">
+          <div class="q-title"><span class="q-number">2</span><span id="disp-q2-title">학생의 나이가 만 16세 이상(2010년생 생일이 지난 경우), 몸무게 47kg 이상입니까?</span><span class="required">*</span></div>
+          <div class="q-sub" id="disp-q2-sub">(여학생의 경우, 만 16세 미만, 몸무게 47kg 미만인 경우 참여불가 합니다.)</div>
+          <div class="radio-group">
+            <div class="radio-item" onclick="selectRadio(this,'q2')" data-group="q2" data-value="예">예</div>
+            <div class="radio-item" onclick="selectRadio(this,'q2')" data-group="q2" data-value="아니오">아니오</div>
+          </div>
+        </div>
+
+        <div class="wizard-step" id="step-2">
+          <div class="q-title"><span class="q-number">3</span>학생의 헌혈 참여에 동의하십니까? <span class="required">*</span></div>
+          <div class="q-sub">(학생의 헌혈 참여는 학부모님의 동의가 반드시 필요합니다.)</div>
+          <div class="radio-group">
+            <div class="radio-item" onclick="selectRadio(this,'q3')" data-group="q3" data-value="동의">예, 동의합니다</div>
+            <div class="radio-item" onclick="selectRadio(this,'q3')" data-group="q3" data-value="미동의">아니오</div>
+          </div>
+        </div>
+
+        <div class="wizard-step" id="step-3">
+          <div class="q-title"><span class="q-number">4</span>학생 학번 <span class="required">*</span></div>
+          <input type="text" id="student-id" placeholder="예: 20101" maxlength="10">
+          <div class="field-hint">학년+반+번호 형식 (예: 20101 = 2학년 1반 1번)</div>
+        </div>
+
+        <div class="wizard-step" id="step-4">
+          <div class="q-title"><span class="q-number">5</span>학생 이름 <span class="required">*</span></div>
+          <input type="text" id="student-name" placeholder="예: 홍길동">
+        </div>
+
+        <div class="wizard-step" id="step-5">
+          <div class="q-title"><span class="q-number">6</span>학부모 연락처 <span class="required">*</span></div>
+          <input type="tel" id="parent-tel" placeholder="예: 010-0000-0000" maxlength="13" inputmode="numeric">
+          <div class="field-hint">숫자만 입력하면 자동으로 하이픈(-)이 붙습니다.</div>
+        </div>
+
+        <div class="wizard-step" id="step-6">
+          <div class="q-title"><span class="q-number">7</span>보호자 성명 <span class="required">*</span></div>
+          <input type="text" id="parent-name" placeholder="예: 홍길순">
+        </div>
+
+        <div class="wizard-step" id="step-7">
+          <div class="q-title" style="margin-bottom:6px;">학부모 서명 <span class="required">*</span></div>
+          <div class="field-hint" style="color:var(--red);font-weight:600;margin-bottom:3px;">✏️ 보호자 성명을 정자로 기입해주세요.</div>
+          <div class="field-hint" style="margin-bottom:10px;">손가락을 떼도 서명이 유지됩니다.</div>
+          <div class="canvas-wrap">
+            <div class="sig-label">서명란</div>
+            <canvas id="sigCanvas" height="180"></canvas>
+            <div class="canvas-actions">
+              <button class="btn-clear" onclick="clearCanvas()">서명 지우기</button>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <button class="submit-btn" id="submitBtn" onclick="submitForm()">동의서 제출하기 →</button>
+      <div class="wizard-nav">
+        <button class="wizard-nav-btn wizard-nav-back" id="wizardBackBtn" onclick="wizardBack()">← 이전</button>
+        <button class="wizard-nav-btn wizard-nav-next" id="wizardNextBtn" onclick="wizardNext()">다음 →</button>
+      </div>
     </div>
 
     <div class="form-disabled-overlay" id="formDisabled">
@@ -453,90 +520,102 @@
 </div>
 
 <script>
-  let GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwaXh9LlQ2mp9IHFkEsZ5tdhCknbM3f8vqLLJlpMf29_yzGPxPOmGKY-A-iDjuKRlnp/exec';
-  let deadlineTime = localStorage.getItem('deadline') ? new Date(localStorage.getItem('deadline')) : null;
+  // ⚠️ 배포된 Google Apps Script 웹앱 URL로 교체하세요 (Code.gs 참고)
+  let GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxbD2Y_OyqZplyA54megCFRtc5f7fiSGDjiryw0c3KZ4_j7joXsQ2KcK7AnFUEwq1ty/exec';
 
-  // ── 관리자 비밀번호 (여기서 변경 가능) ──
-  const ADMIN_PASSWORD = '1234';
-  let adminUnlocked = false;
+  let deadlineTime = null;
+  let currentConfig = {};
 
-  function toggleAdminLock() {
-    const arrow = document.getElementById('adminArrow');
-    if (adminUnlocked) {
-      // 이미 인증된 경우 패널 바로 토글
-      const panel = document.getElementById('adminPanel');
-      panel.classList.toggle('show');
-      arrow.classList.toggle('open', panel.classList.contains('show'));
-    } else {
-      const lock = document.getElementById('adminLock');
-      const isShowing = lock.classList.contains('show');
-      lock.classList.toggle('show', !isShowing);
-      arrow.classList.toggle('open', !isShowing);
-      if (!isShowing) setTimeout(() => document.getElementById('adminPwInput').focus(), 100);
+  // ── 구글시트("설정" 탭)에서 설정값 불러오기 ──
+  function setSyncStatus(state, text) {
+    const dot = document.getElementById('syncDot');
+    const label = document.getElementById('syncText');
+    dot.className = 'sync-dot' + (state === 'ok' ? ' ok' : state === 'err' ? ' err' : '');
+    label.textContent = text;
+  }
+
+  async function fetchConfig() {
+    const btn = document.getElementById('refreshBtn');
+    btn.disabled = true;
+    setSyncStatus('', '구글시트에서 정보를 불러오는 중...');
+    try {
+      const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'GET' });
+      const data = await res.json();
+      if (data && data.ok && data.config) {
+        currentConfig = data.config;
+        applyConfigToDisplay(currentConfig);
+        if (Array.isArray(data.restrictions)) renderRestrictions(data.restrictions);
+        if (Array.isArray(data.checklist)) renderChecklist(data.checklist);
+        const now = new Date();
+        setSyncStatus('ok', '최신 정보 (' + now.toLocaleTimeString('ko-KR') + ' 기준)');
+      } else {
+        throw new Error('설정 데이터 없음');
+      }
+    } catch (err) {
+      setSyncStatus('err', '시트 연결 실패 - 기본값으로 표시 중 (새로고침을 눌러보세요)');
+    } finally {
+      btn.disabled = false;
     }
   }
 
-  function checkAdminPw() {
-    const input = document.getElementById('adminPwInput');
-    if (input.value === ADMIN_PASSWORD) {
-      adminUnlocked = true;
-      document.getElementById('adminLock').classList.remove('show');
-      document.getElementById('adminPanel').classList.add('show');
-      document.getElementById('adminArrow').classList.add('open');
-      input.value = '';
-    } else {
-      input.style.borderColor = '#e74c3c';
-      input.value = '';
-      input.placeholder = '비밀번호가 틀렸습니다';
-      setTimeout(() => { input.style.borderColor = '#445566'; input.placeholder = '비밀번호 입력'; }, 1500);
-    }
+  function escapeHtml_(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
   }
 
-  function logoutAdmin() {
-    adminUnlocked = false;
-    document.getElementById('adminPanel').classList.remove('show');
-    document.getElementById('adminArrow').classList.remove('open');
+  function renderRestrictions(list) {
+    const container = document.getElementById('restrictionList');
+    if (!list || list.length === 0) return; // 시트가 비어있으면 기존 기본 목록 유지
+    container.innerHTML = list.map(item => {
+      const icon = escapeHtml_(item.icon || '⚠️');
+      const text = escapeHtml_(item.text || '');
+      return `<div class="restriction-item"><span class="restriction-icon">${icon}</span>${text}</div>`;
+    }).join('');
   }
 
-  function applySettings() {
-    const date     = document.getElementById('cfg-date').value.trim();
-    const place    = document.getElementById('cfg-place').value.trim();
-    const target   = document.getElementById('cfg-target').value.trim();
-    const service  = document.getElementById('cfg-service').value.trim();
-    const subtitle = document.getElementById('cfg-subtitle').value.trim();
-    const deadline = document.getElementById('cfg-deadline').value;
-    const q2title  = document.getElementById('cfg-q2-title').value.trim();
-    const q2sub    = document.getElementById('cfg-q2-sub').value.trim();
+  function renderChecklist(list) {
+    const container = document.getElementById('checklist');
+    if (!list || list.length === 0) return; // 시트가 비어있으면 기존 기본 목록 유지
+    container.innerHTML = list.map((item, idx) => {
+      const id = 'c' + (idx + 1);
+      const icon = item.icon ? escapeHtml_(item.icon) + ' ' : '';
+      const text = escapeHtml_(item.text || '');
+      return '<div class="check-item" onclick="toggleCheck(this)">' +
+        '<input type="checkbox" id="' + id + '">' +
+        '<label for="' + id + '">' + icon + text + '</label>' +
+        '</div>';
+    }).join('');
+    updateNextButtonState();
+  }
 
-    if (date)     document.getElementById('disp-date').textContent    = date;
-    if (place)    document.getElementById('disp-place').textContent   = place;
-    if (target)   document.getElementById('disp-target').textContent  = target;
-    if (service)  document.getElementById('disp-service').textContent = service;
-    if (subtitle) document.getElementById('disp-subtitle').textContent = subtitle;
-    if (q2title)  document.getElementById('disp-q2-title').textContent = q2title;
-    if (q2sub)    document.getElementById('disp-q2-sub').textContent   = q2sub;
+  function applyConfigToDisplay(cfg) {
+    if (cfg.event_date) document.getElementById('disp-date').textContent = cfg.event_date;
+    if (cfg.place)       document.getElementById('disp-place').textContent = cfg.place;
+    if (cfg.target)      document.getElementById('disp-target').textContent = cfg.target;
+    if (cfg.service)     document.getElementById('disp-service').textContent = cfg.service;
+    if (cfg.q2_title)    document.getElementById('disp-q2-title').textContent = cfg.q2_title;
+    if (cfg.q2_sub)      document.getElementById('disp-q2-sub').textContent = cfg.q2_sub;
 
-    if (deadline) {
-      deadlineTime = new Date(deadline);
-      localStorage.setItem('deadline', deadline);
+    if (cfg.deadline) {
+      deadlineTime = new Date(cfg.deadline);
       const fmt = deadlineTime.toLocaleString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'short', hour:'2-digit', minute:'2-digit' });
       document.getElementById('disp-deadline').textContent = fmt + ' 까지';
       document.getElementById('deadline-row').style.display = 'block';
     } else {
       deadlineTime = null;
-      localStorage.removeItem('deadline');
       document.getElementById('deadline-row').style.display = 'none';
     }
-
     checkDeadline();
-    document.getElementById('adminPanel').classList.remove('show');
-    document.getElementById('adminArrow').classList.remove('open');
-    adminUnlocked = false;
-    alert('✅ 설정이 저장되고 적용되었습니다!');
   }
 
   function checkDeadline() {
-    if (!deadlineTime) return;
+    if (!deadlineTime) {
+      document.getElementById('deadlineWarning').classList.remove('show');
+      document.getElementById('form-section').style.display = 'block';
+      document.getElementById('formDisabled').classList.remove('show');
+      return;
+    }
     const now = new Date();
     const isExpired = now > deadlineTime;
     document.getElementById('deadlineWarning').classList.toggle('show', isExpired);
@@ -550,17 +629,144 @@
   }
 
   window.addEventListener('load', () => {
-    const savedDeadline = localStorage.getItem('deadline');
-    if (savedDeadline) {
-      document.getElementById('cfg-deadline').value = savedDeadline;
-      deadlineTime = new Date(savedDeadline);
-      const fmt = deadlineTime.toLocaleString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'short', hour:'2-digit', minute:'2-digit' });
-      document.getElementById('disp-deadline').textContent = fmt + ' 까지';
-      document.getElementById('deadline-row').style.display = 'block';
-    }
-    checkDeadline();
+    fetchConfig();
     initCanvas();
+    initWizard();
   });
+
+  // ── 신청자 명단 ──
+  let submissionsCache = [];
+  let submissionListLoaded = false;
+  let sortField = 'submitTime';
+  let sortDir = 'desc';
+
+  function toggleSubmissionList() {
+    const panel = document.getElementById('listPanel');
+    const arrow = document.getElementById('listArrow');
+    const willShow = !panel.classList.contains('show');
+    panel.classList.toggle('show', willShow);
+    arrow.classList.toggle('open', willShow);
+    if (willShow) {
+      updateSortButtonUI();
+      if (!submissionListLoaded) loadSubmissionList();
+    }
+  }
+
+  async function loadSubmissionList() {
+    const tbody = document.getElementById('submissionListBody');
+    const countLabel = document.getElementById('submissionCount');
+    countLabel.textContent = '불러오는 중...';
+    try {
+      const res = await fetch(GOOGLE_SCRIPT_URL + '?action=list');
+      const data = await res.json();
+      if (data && data.ok && Array.isArray(data.submissions)) {
+        submissionsCache = data.submissions;
+        submissionListLoaded = true;
+        renderSubmissionList();
+      } else {
+        throw new Error('명단 데이터 없음');
+      }
+    } catch (err) {
+      tbody.innerHTML = '<tr><td colspan="3" class="empty-row">명단을 불러오지 못했습니다. 🔄 버튼으로 다시 시도해주세요.</td></tr>';
+      countLabel.textContent = '오류';
+    }
+  }
+
+  function setSort(field) {
+    if (sortField === field) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortField = field;
+      sortDir = 'asc';
+    }
+    updateSortButtonUI();
+    renderSubmissionList();
+  }
+
+  function updateSortButtonUI() {
+    const idBtn = document.getElementById('sortByIdBtn');
+    const timeBtn = document.getElementById('sortByTimeBtn');
+    const idArrow = document.getElementById('sortByIdArrow');
+    const timeArrow = document.getElementById('sortByTimeArrow');
+    idBtn.classList.toggle('active', sortField === 'studentId');
+    timeBtn.classList.toggle('active', sortField === 'submitTime');
+    idArrow.textContent = sortField === 'studentId' ? (sortDir === 'asc' ? '↑' : '↓') : '';
+    timeArrow.textContent = sortField === 'submitTime' ? (sortDir === 'asc' ? '↑' : '↓') : '';
+  }
+
+  function renderSubmissionList() {
+    const tbody = document.getElementById('submissionListBody');
+    const countLabel = document.getElementById('submissionCount');
+
+    const sorted = [...submissionsCache].sort((a, b) => {
+      let cmp;
+      if (sortField === 'studentId') {
+        cmp = String(a.studentId || '').localeCompare(String(b.studentId || ''), 'ko', { numeric: true, sensitivity: 'base' });
+      } else {
+        cmp = new Date(a.submitTime || 0).getTime() - new Date(b.submitTime || 0).getTime();
+      }
+      return sortDir === 'asc' ? cmp : -cmp;
+    });
+
+    countLabel.textContent = sorted.length + '명 제출';
+
+    if (sorted.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3" class="empty-row">아직 제출된 동의서가 없습니다.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = sorted.map(item => {
+      const dateStr = item.submitTime ? new Date(item.submitTime).toLocaleString('ko-KR') : '-';
+      return '<tr>' +
+        '<td>' + escapeHtml_(dateStr) + '</td>' +
+        '<td>' + escapeHtml_(item.studentId || '') + '</td>' +
+        '<td>' + escapeHtml_(item.studentName || '') + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  async function downloadSubmissionsAsExcel() {
+    if (!submissionListLoaded) {
+      await loadSubmissionList();
+    }
+    if (!submissionsCache || submissionsCache.length === 0) {
+      alert('다운로드할 신청자 명단이 없습니다.');
+      return;
+    }
+
+    // 다운로드 파일은 화면 정렬 상태와 무관하게 항상 학번순으로 정리
+    const sorted = [...submissionsCache].sort((a, b) =>
+      String(a.studentId || '').localeCompare(String(b.studentId || ''), 'ko', { numeric: true, sensitivity: 'base' })
+    );
+
+    const escapeCsvCell = (val) => {
+      const s = String(val === undefined || val === null ? '' : val);
+      return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    };
+
+    const header = ['제출일시', '학번', '이름'];
+    const rows = sorted.map(item => [
+      item.submitTime ? new Date(item.submitTime).toLocaleString('ko-KR') : '',
+      item.studentId || '',
+      item.studentName || ''
+    ]);
+
+    const csvContent = [header, ...rows]
+      .map(r => r.map(escapeCsvCell).join(','))
+      .join('\r\n');
+
+    // 엑셀에서 한글이 깨지지 않도록 UTF-8 BOM 포함
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const todayStr = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = '헌혈동의서_신청자명단_' + todayStr + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
 
   // ── Canvas 서명 (모바일 최적화) ──
   const canvas = document.getElementById('sigCanvas');
@@ -620,6 +826,7 @@
     e.preventDefault();
     drawing = false;
     if (currentPath.length > 0) paths.push([...currentPath]);
+    updateNextButtonState();
   }
 
   function redrawAll() {
@@ -638,6 +845,7 @@
     paths = [];
     currentPath = [];
     hasSig = false;
+    updateNextButtonState();
   }
 
   canvas.style.touchAction = 'none';
@@ -654,10 +862,18 @@
   canvas.addEventListener('touchcancel', endDraw, { passive: false });
   window.addEventListener('resize', initCanvas);
 
+  function getCurrentChecklistLabels() {
+    return Array.from(document.querySelectorAll('#checklist label')).map(l => l.textContent.trim());
+  }
+
+  const WIZARD_TOTAL_STEPS = 8;
+  let wizardIndex = 0;
+
   function toggleCheck(el) {
     const cb = el.querySelector('input[type="checkbox"]');
     cb.checked = !cb.checked;
     el.classList.toggle('checked', cb.checked);
+    updateNextButtonState();
   }
 
   const radioValues = {};
@@ -665,6 +881,127 @@
     document.querySelectorAll(`[data-group="${group}"]`).forEach(r => r.classList.remove('selected'));
     el.classList.add('selected');
     radioValues[group] = el.dataset.value;
+    updateNextButtonState();
+    setTimeout(() => wizardNext(), 320); // 선택하면 자동으로 다음 화면으로 이동
+  }
+
+  function isStepAnswered(index) {
+    if (index === 0) return document.querySelectorAll('#checklist input:not(:checked)').length === 0;
+    if (index === 1) return !!radioValues['q2'];
+    if (index === 2) return !!radioValues['q3'];
+    if (index === 3) return document.getElementById('student-id').value.trim().length > 0;
+    if (index === 4) return document.getElementById('student-name').value.trim().length > 0;
+    if (index === 5) return document.getElementById('parent-tel').value.trim().length > 0;
+    if (index === 6) return document.getElementById('parent-name').value.trim().length > 0;
+    if (index === 7) return hasSig;
+    return true;
+  }
+
+  function updateNextButtonState() {
+    const nextBtn = document.getElementById('wizardNextBtn');
+    if (nextBtn) nextBtn.disabled = !isStepAnswered(wizardIndex);
+  }
+
+  function showStep(index) {
+    wizardIndex = index;
+    for (let i = 0; i < WIZARD_TOTAL_STEPS; i++) {
+      const el = document.getElementById('step-' + i);
+      if (!el) continue;
+      el.classList.toggle('active', i === index);
+    }
+    document.getElementById('progressFill').style.width = (((index + 1) / WIZARD_TOTAL_STEPS) * 100) + '%';
+    document.getElementById('progressLabel').textContent = (index + 1) + ' / ' + WIZARD_TOTAL_STEPS;
+    document.getElementById('wizardBackBtn').disabled = (index === 0);
+    document.getElementById('wizardNextBtn').textContent = (index === WIZARD_TOTAL_STEPS - 1) ? '동의서 제출하기 →' : '다음 →';
+
+    // 서명 단계는 숨겨진 상태(display:none)에서 캔버스 너비가 0으로 잡히는 문제가 있어,
+    // 화면에 보일 때마다 실제 너비 기준으로 캔버스를 다시 초기화합니다 (기존 서명은 유지됨).
+    if (index === 7) {
+      initCanvas();
+    }
+
+    updateNextButtonState();
+
+    const stepEl = document.getElementById('step-' + index);
+    const firstInput = stepEl ? stepEl.querySelector('input[type="text"], input[type="tel"]') : null;
+    if (firstInput) setTimeout(() => firstInput.focus(), 320);
+  }
+
+  function wizardBack() {
+    if (wizardIndex === 0) return;
+    showStep(wizardIndex - 1);
+  }
+
+  function wizardNext() {
+    if (deadlineTime && new Date() > deadlineTime) { alert('제출 기한이 마감되었습니다.'); checkDeadline(); return; }
+
+    if (!isStepAnswered(wizardIndex)) {
+      const messages = [
+        '유의사항 체크리스트를 모두 확인해주세요.',
+        '나이/몸무게 조건 여부를 선택해주세요.',
+        '학부모 동의 여부를 선택해주세요.',
+        '학번을 입력해주세요.',
+        '학생 이름을 입력해주세요.',
+        '학부모 연락처를 입력해주세요.',
+        '보호자 성명을 입력해주세요.',
+        '학부모 서명을 해주세요.'
+      ];
+      alert(messages[wizardIndex] || '입력을 확인해주세요.');
+      return;
+    }
+
+    if (wizardIndex === 1 && radioValues['q2'] === '아니오') {
+      alert('만 16세 미만 또는 몸무게 47kg 미만인 경우 헌혈에 참여할 수 없습니다.');
+      return;
+    }
+    if (wizardIndex === 2 && radioValues['q3'] === '미동의') {
+      alert('학부모님의 동의가 없으면 헌혈에 참여할 수 없습니다.');
+      return;
+    }
+
+    if (wizardIndex === WIZARD_TOTAL_STEPS - 1) {
+      submitForm();
+      return;
+    }
+
+    showStep(wizardIndex + 1);
+  }
+
+  function formatPhoneInput(e) {
+    const digits = e.target.value.replace(/\D/g, '').slice(0, 11);
+    let formatted = digits;
+    if (digits.length > 3 && digits.length <= 6) {
+      formatted = digits.slice(0, 3) + '-' + digits.slice(3);
+    } else if (digits.length > 6 && digits.length <= 10) {
+      formatted = digits.slice(0, 3) + '-' + digits.slice(3, digits.length - 4) + '-' + digits.slice(digits.length - 4);
+    } else if (digits.length > 10) {
+      formatted = digits.slice(0, 3) + '-' + digits.slice(3, 7) + '-' + digits.slice(7);
+    }
+    e.target.value = formatted;
+  }
+
+  function initWizard() {
+    document.getElementById('parent-tel').addEventListener('input', formatPhoneInput);
+    ['student-id', 'student-name', 'parent-tel', 'parent-name'].forEach(id => {
+      const input = document.getElementById(id);
+      input.addEventListener('input', updateNextButtonState);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); wizardNext(); }
+      });
+    });
+    showStep(0);
+  }
+
+  async function isDuplicateStudent(studentId) {
+    try {
+      const url = GOOGLE_SCRIPT_URL + '?checkStudentId=' + encodeURIComponent(studentId);
+      const res = await fetch(url);
+      const data = await res.json();
+      return !!(data && data.ok && data.exists);
+    } catch (err) {
+      // 확인 자체가 실패하면 서버 측(doPost) 중복 검사에 맡기고 통과시킴
+      return false;
+    }
   }
 
   async function submitForm() {
@@ -689,33 +1026,42 @@
     if (!parentName)     { alert('보호자 성명을 입력해주세요.'); return; }
     if (!hasSig)         { alert('학부모 서명을 해주세요.'); return; }
 
-    const btn = document.getElementById('submitBtn');
+    const btn = document.getElementById('wizardNextBtn');
     btn.disabled = true;
+    btn.textContent = '중복 제출 확인 중...';
+
+    const alreadySubmitted = await isDuplicateStudent(studentId);
+    if (alreadySubmitted) {
+      alert('이미 제출된 학번입니다. 중복 제출은 불가능합니다.');
+      btn.disabled = false;
+      btn.textContent = '동의서 제출하기 →';
+      return;
+    }
+
     btn.textContent = '제출 중...';
 
     const payload = {
-      submitTime: new Date().toLocaleString('ko-KR'),
+      submitTime: new Date().toISOString(),
       studentId, studentName, parentTel, parentName, q2, q3,
-      checklist: '모두 확인',
+      checklist: getCurrentChecklistLabels(),
+      hasSignature: hasSig,
       signatureData: canvas.toDataURL('image/png')
     };
 
     if (!GOOGLE_SCRIPT_URL) {
-      alert('⚠️ 관리자 설정에서 Google Script URL을 먼저 입력해주세요.');
+      alert('⚠️ Google Script URL이 설정되지 않았습니다.');
       btn.disabled = false;
       btn.textContent = '동의서 제출하기 →';
       return;
     }
 
     try {
-      // 모바일 포함 전체 호환: image 제외한 데이터 먼저 전송 후 성공화면 표시
       const sendData = async () => {
         // 서명 이미지 용량 줄이기 (모바일 대용량 문제 방지)
         const offscreen = document.createElement('canvas');
         offscreen.width = 400;
         offscreen.height = 120;
         const offCtx = offscreen.getContext('2d');
-        // 배경을 흰색으로 채워서 투명→검정 변환 방지
         offCtx.fillStyle = '#ffffff';
         offCtx.fillRect(0, 0, 400, 120);
         offCtx.drawImage(canvas, 0, 0, 400, 120);
@@ -723,31 +1069,43 @@
 
         payload.signatureData = compressedSig;
 
-        // XMLHttpRequest 방식 (모바일 fetch 실패 대비)
         return new Promise((resolve) => {
           const xhr = new XMLHttpRequest();
           xhr.open('POST', GOOGLE_SCRIPT_URL, true);
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.timeout = 15000;
-          xhr.onload = () => resolve(true);
+          xhr.onload = () => {
+            let result = { ok: true };
+            try { result = JSON.parse(xhr.responseText); } catch (parseErr) { /* 응답 파싱 실패 시 성공으로 간주 */ }
+            resolve(result);
+          };
           xhr.onerror = () => {
-            // fetch로 재시도
             fetch(GOOGLE_SCRIPT_URL, {
               method: 'POST',
               mode: 'no-cors',
               body: JSON.stringify(payload)
-            }).finally(() => resolve(true));
+            }).finally(() => resolve({ ok: true, unknown: true }));
           };
-          xhr.ontimeout = () => resolve(true);
+          xhr.ontimeout = () => resolve({ ok: true, unknown: true });
           xhr.send(JSON.stringify(payload));
         });
       };
 
-      await sendData();
+      const result = await sendData();
+
+      if (result && result.ok === false) {
+        const msg = result.duplicate
+          ? '이미 제출된 학번입니다. 중복 제출은 불가능합니다.'
+          : (result.error || '제출 중 문제가 발생했습니다. 다시 시도해주세요.');
+        alert(msg);
+        btn.disabled = false;
+        btn.textContent = '동의서 제출하기 →';
+        return;
+      }
+
       showSuccess(studentName);
 
     } catch (err) {
-      // 오류가 나도 일단 성공 화면 표시 (no-cors 특성상 오류 감지 불가)
       showSuccess(studentName);
     }
   }
@@ -756,6 +1114,7 @@
     document.getElementById('form-section').style.display = 'none';
     document.getElementById('successDiv').classList.add('show');
     document.getElementById('success-name').textContent = studentName;
+    if (submissionListLoaded) loadSubmissionList();
   }
 </script>
 </body>
