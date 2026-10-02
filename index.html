@@ -1057,17 +1057,23 @@
 
     try {
       const sendData = async () => {
-        // 서명 이미지 용량 줄이기 (모바일 대용량 문제 방지)
-        const offscreen = document.createElement('canvas');
-        offscreen.width = 400;
-        offscreen.height = 120;
-        const offCtx = offscreen.getContext('2d');
-        offCtx.fillStyle = '#ffffff';
-        offCtx.fillRect(0, 0, 400, 120);
-        offCtx.drawImage(canvas, 0, 0, 400, 120);
-        const compressedSig = offscreen.toDataURL('image/png');
-
-        payload.signatureData = compressedSig;
+        // 서명 이미지 용량 줄이기 (모바일 대용량 문제 방지).
+        // 일부 기기/브라우저에서 캔버스 크기가 비정상적일 때(너비 0 등) drawImage가
+        // 오류를 던질 수 있어, 실패하면 압축 없이 원본 서명 그대로 제출을 계속 진행한다.
+        try {
+          if (canvas.width > 0 && canvas.height > 0) {
+            const offscreen = document.createElement('canvas');
+            offscreen.width = 400;
+            offscreen.height = 120;
+            const offCtx = offscreen.getContext('2d');
+            offCtx.fillStyle = '#ffffff';
+            offCtx.fillRect(0, 0, 400, 120);
+            offCtx.drawImage(canvas, 0, 0, 400, 120);
+            payload.signatureData = offscreen.toDataURL('image/png');
+          }
+        } catch (compressErr) {
+          // 압축 실패 시 payload.signatureData는 이미 원본 서명(canvas.toDataURL)으로 채워져 있으므로 그대로 진행
+        }
 
         return new Promise((resolve) => {
           const xhr = new XMLHttpRequest();
@@ -1110,7 +1116,11 @@
       showSuccess(studentName);
 
     } catch (err) {
-      showSuccess(studentName);
+      // 실제로 전송이 실패했는데도 "제출 완료"로 표시되면 문제를 발견하기 어려우므로,
+      // 오류 내용을 그대로 보여주고 제출을 성공 처리하지 않는다.
+      alert('제출 중 오류가 발생했습니다. 다시 시도해주시고, 계속되면 아래 내용을 캡처해서 보내주세요.\n\n오류: ' + (err && err.message ? err.message : String(err)));
+      btn.disabled = false;
+      btn.textContent = '동의서 제출하기 →';
     }
   }
 
