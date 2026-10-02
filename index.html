@@ -1072,7 +1072,11 @@
         return new Promise((resolve) => {
           const xhr = new XMLHttpRequest();
           xhr.open('POST', GOOGLE_SCRIPT_URL, true);
-          xhr.setRequestHeader('Content-Type', 'application/json');
+          // application/json은 브라우저가 전송 전 preflight(사전 확인) 요청을 보내게 만드는데,
+          // Apps Script는 이를 제대로 처리하지 못해 일부 모바일 브라우저(삼성인터넷 등)에서
+          // 요청 자체가 막힐 수 있음. text/plain으로 보내면 preflight 없이 바로 전송되고,
+          // 서버에서는 어차피 텍스트를 JSON으로 파싱하므로 동작은 동일함.
+          xhr.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
           xhr.timeout = 15000;
           xhr.onload = () => {
             let result = { ok: true };
